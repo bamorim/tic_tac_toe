@@ -41,11 +41,11 @@ defmodule TicTacToe do
     end
   end
 
-  def do_play(%Game{turn: :x, x: plays} = game, x, y) do
+  defp do_play(%Game{turn: :x, x: plays} = game, x, y) do
     %Game{game | turn: :o, x: MapSet.put(plays, {x, y})}
   end
 
-  def do_play(%Game{turn: :o, o: plays} = game, x, y) do
+  defp do_play(%Game{turn: :o, o: plays} = game, x, y) do
     %Game{game | turn: :x, o: MapSet.put(plays, {x, y})}
   end
 end
