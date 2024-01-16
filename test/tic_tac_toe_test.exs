@@ -39,5 +39,16 @@ defmodule TicTacToeTest do
       assert {:error, :out_of_bounds} = TicTacToe.play(game, 0, -1)
       assert {:error, :out_of_bounds} = TicTacToe.play(game, -1, 0)
     end
+
+    test "returns error when position of play is occupied" do
+      {:ok, game} =
+        TicTacToe.new_game()
+        |> TicTacToe.play(0, 0)
+        |> elem(1)
+        |> TicTacToe.play(1, 0)
+
+      assert {:error, :occupied} = TicTacToe.play(game, 0, 0)
+      assert {:error, :occupied} = TicTacToe.play(game, 1, 0)
+    end
   end
 end
