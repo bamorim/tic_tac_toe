@@ -29,5 +29,15 @@ defmodule TicTacToeTest do
       assert MapSet.size(new_game.o) == 1
       assert {1, 0} in new_game.o
     end
+
+    test "returns error when play is out of bounds" do
+      game = TicTacToe.new_game()
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, -1, -1)
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, 3, 3)
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, 0, 3)
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, 3, 0)
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, 0, -1)
+      assert {:error, :out_of_bounds} = TicTacToe.play(game, -1, 0)
+    end
   end
 end
