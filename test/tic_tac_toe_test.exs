@@ -68,5 +68,117 @@ defmodule TicTacToeTest do
       assert {:error, :occupied} = TicTacToe.play(game, 0, 0)
       assert {:error, :occupied} = TicTacToe.play(game, 1, 0)
     end
+
+    test "ends game with winner x (row 0)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 1)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 0, 2)
+    end
+
+    test "ends game with winner o (row 0)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(2, 0)
+
+      assert {:ok, %Game{winner: :o, turn: nil}} = TicTacToe.play(game, 0, 2)
+    end
+
+    test "ends game with winner x (row 1)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(2, 0)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(2, 1)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 1, 2)
+    end
+
+    test "ends game with winner x (row 2)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(2, 0)
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(2, 1)
+        |> TicTacToe.play!(1, 1)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 2, 2)
+    end
+
+    test "ends game with winner x (col 0)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(1, 1)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 2, 0)
+    end
+
+    test "ends game with winner x (col 1)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(0, 2)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(1, 2)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 2, 1)
+    end
+
+    test "ends game with winner x (col 2)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 2)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 2)
+        |> TicTacToe.play!(1, 1)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 2, 2)
+    end
+
+    test "ends game with winner x (diag 1)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(0, 2)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 2, 2)
+    end
+
+    test "ends game with winner x (diag 2)" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(2, 0)
+        |> TicTacToe.play!(2, 1)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(2, 2)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = TicTacToe.play(game, 0, 2)
+    end
+
+    test "cannot play when game have a winner" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(0, 2)
+
+      assert {:error, :game_over} = TicTacToe.play(game, 1, 2)
+    end
   end
 end

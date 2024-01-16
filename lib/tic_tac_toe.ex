@@ -32,14 +32,19 @@ defmodule TicTacToe do
   end
 
   def play(game, x, y) do
-    with :ok <- check_play_in_bounds(x, y),
+    with :ok <- check_game_over(game),
+         :ok <- check_play_in_bounds(x, y),
          :ok <- check_play_is_free(game, x, y) do
       {:ok,
        game
        |> do_play(x, y)
-       |> next_turn()}
+       |> next_turn()
+       |> maybe_end_game()}
     end
   end
+
+  defp check_game_over(%{winner: nil}), do: :ok
+  defp check_game_over(%{winner: _}), do: {:error, :game_over}
 
   defp check_play_in_bounds(x, y) do
     if x < 0 or y < 0 or x > 2 or y > 2 do
@@ -65,4 +70,45 @@ defmodule TicTacToe do
 
   defp next_turn(%Game{turn: :x} = game), do: %Game{game | turn: :o}
   defp next_turn(%Game{turn: :o} = game), do: %Game{game | turn: :x}
+
+  defp maybe_end_game(game) do
+    case winner(game) do
+      nil -> game
+      winner -> %Game{winner: winner, turn: nil}
+    end
+  end
+
+  def winner(%Game{board: {row0, row1, row2} = board}) do
+    {col0, col1, col2} = transpose(board)
+    {diag1, diag2} = diagonals(board)
+
+    with nil <- winner_at(row0),
+         nil <- winner_at(row1),
+         nil <- winner_at(row2),
+         nil <- winner_at(col0),
+         nil <- winner_at(col1),
+         nil <- winner_at(col2),
+         nil <- winner_at(diag1),
+         nil <- winner_at(diag2) do
+      nil
+    end
+  end
+
+  defp transpose({{c00, c01, c02}, {c10, c11, c12}, {c20, c21, c22}}) do
+    {{c00, c10, c20}, {c01, c11, c21}, {c02, c12, c22}}
+  end
+
+  defp diagonals({
+         {c00, _01, c02},
+         {_10, c11, _12},
+         {c20, _21, c22}
+       }) do
+    {
+      {c00, c11, c22},
+      {c20, c11, c02}
+    }
+  end
+
+  defp winner_at({a, a, a}), do: a
+  defp winner_at(_), do: nil
 end
