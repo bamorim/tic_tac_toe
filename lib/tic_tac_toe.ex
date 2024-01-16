@@ -4,11 +4,24 @@ defmodule TicTacToe do
   """
 
   defmodule Game do
-    defstruct [:winner, :turn, :x, :o]
+    defstruct [:winner, :turn, :board]
   end
 
   def new_game do
-    %Game{winner: nil, turn: :x, x: MapSet.new(), o: MapSet.new()}
+    %Game{
+      winner: nil,
+      turn: :x,
+      board:
+        nil
+        |> Tuple.duplicate(3)
+        |> Tuple.duplicate(3)
+    }
+  end
+
+  def get(%Game{board: board}, x, y) do
+    board
+    |> elem(x)
+    |> elem(y)
   end
 
   def play!(game, x, y) do
@@ -21,7 +34,10 @@ defmodule TicTacToe do
   def play(game, x, y) do
     with :ok <- check_play_in_bounds(x, y),
          :ok <- check_play_is_free(game, x, y) do
-      {:ok, do_play(game, x, y)}
+      {:ok,
+       game
+       |> do_play(x, y)
+       |> next_turn()}
     end
   end
 
@@ -33,19 +49,20 @@ defmodule TicTacToe do
     end
   end
 
-  defp check_play_is_free(%Game{x: x_plays, o: o_plays}, x, y) do
-    if {x, y} in x_plays or {x, y} in o_plays do
-      {:error, :occupied}
-    else
-      :ok
+  defp check_play_is_free(%Game{} = game, x, y) do
+    case get(game, x, y) do
+      nil -> :ok
+      _ -> {:error, :occupied}
     end
   end
 
-  defp do_play(%Game{turn: :x, x: plays} = game, x, y) do
-    %Game{game | turn: :o, x: MapSet.put(plays, {x, y})}
+  defp do_play(%Game{turn: player, board: board} = game, x, y) do
+    row = board |> elem(x) |> put_elem(y, player)
+    board = put_elem(board, x, row)
+
+    %Game{game | board: board}
   end
 
-  defp do_play(%Game{turn: :o, o: plays} = game, x, y) do
-    %Game{game | turn: :x, o: MapSet.put(plays, {x, y})}
-  end
+  defp next_turn(%Game{turn: :x} = game), do: %Game{game | turn: :o}
+  defp next_turn(%Game{turn: :o} = game), do: %Game{game | turn: :x}
 end
