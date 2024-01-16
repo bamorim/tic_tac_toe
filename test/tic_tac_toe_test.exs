@@ -11,6 +11,22 @@ defmodule TicTacToeTest do
     end
   end
 
+  describe "play!/3" do
+    test "returns game if play is fine" do
+      game = TicTacToe.new_game()
+      {:ok, expected} = TicTacToe.play(game, 0, 0)
+      assert ^expected = TicTacToe.play!(game, 0, 0)
+    end
+
+    test "raises if play is invalid" do
+      game = TicTacToe.new_game()
+
+      assert_raise(RuntimeError, fn ->
+        TicTacToe.play!(game, 3, 0)
+      end)
+    end
+  end
+
   describe "play/3" do
     test "adds a play to the x player play list" do
       game = TicTacToe.new_game()
@@ -22,7 +38,7 @@ defmodule TicTacToeTest do
     end
 
     test "adds a play to the o player play list" do
-      {:ok, game} = TicTacToe.new_game() |> TicTacToe.play(0, 0)
+      game = TicTacToe.new_game() |> TicTacToe.play!(0, 0)
 
       assert {:ok, %Game{turn: :x} = new_game} = TicTacToe.play(game, 1, 0)
       assert new_game.x == game.x
@@ -41,11 +57,10 @@ defmodule TicTacToeTest do
     end
 
     test "returns error when position of play is occupied" do
-      {:ok, game} =
+      game =
         TicTacToe.new_game()
-        |> TicTacToe.play(0, 0)
-        |> elem(1)
-        |> TicTacToe.play(1, 0)
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(1, 0)
 
       assert {:error, :occupied} = TicTacToe.play(game, 0, 0)
       assert {:error, :occupied} = TicTacToe.play(game, 1, 0)

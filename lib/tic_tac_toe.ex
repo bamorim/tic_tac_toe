@@ -11,6 +11,13 @@ defmodule TicTacToe do
     %Game{winner: nil, turn: :x, x: MapSet.new(), o: MapSet.new()}
   end
 
+  def play!(game, x, y) do
+    case play(game, x, y) do
+      {:ok, game} -> game
+      {:error, error} -> raise "play! failed with error #{error}"
+    end
+  end
+
   def play(game, x, y) do
     with :ok <- check_play_in_bounds(x, y),
          :ok <- check_play_is_free(game, x, y) do
