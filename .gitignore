@@ -24,3 +24,6 @@ tic_tac_toe-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Built escript
+/tic_tac_toe

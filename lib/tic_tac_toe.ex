@@ -1,5 +1,5 @@
 defmodule TicTacToe do
   @moduledoc """
-  Documentation for `TicTacToe`.
+  Runs a TicTacToe game on a CLI loop.
   """
 end

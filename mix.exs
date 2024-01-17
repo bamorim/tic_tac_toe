@@ -7,7 +7,8 @@ defmodule TicTacToe.MixProject do
       version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript()
     ]
   end
 
@@ -23,5 +24,9 @@ defmodule TicTacToe.MixProject do
     [
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
+  end
+
+  defp escript do
+    [main_module: TicTacToe.CLI]
   end
 end
