@@ -194,5 +194,20 @@ defmodule Game.GameTest do
 
       assert {:ok, %Game{winner: :tie, turn: nil}} = Game.play(game, 2, 1)
     end
+
+    test "can win on the last possible play" do
+      game =
+        Game.new()
+        |> Game.play!(0, 0)
+        |> Game.play!(0, 1)
+        |> Game.play!(0, 2)
+        |> Game.play!(1, 0)
+        |> Game.play!(1, 1)
+        |> Game.play!(1, 2)
+        |> Game.play!(2, 1)
+        |> Game.play!(2, 0)
+
+      assert {:ok, %Game{winner: :x, turn: nil}} = Game.play(game, 2, 2)
+    end
   end
 end
