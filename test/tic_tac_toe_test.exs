@@ -180,5 +180,20 @@ defmodule TicTacToeTest do
 
       assert {:error, :game_over} = TicTacToe.play(game, 1, 2)
     end
+
+    test "ends game with a tie" do
+      game =
+        TicTacToe.new_game()
+        |> TicTacToe.play!(0, 0)
+        |> TicTacToe.play!(0, 1)
+        |> TicTacToe.play!(1, 1)
+        |> TicTacToe.play!(0, 2)
+        |> TicTacToe.play!(1, 2)
+        |> TicTacToe.play!(1, 0)
+        |> TicTacToe.play!(2, 0)
+        |> TicTacToe.play!(2, 2)
+
+      assert {:ok, %Game{winner: :tie, turn: nil}} = TicTacToe.play(game, 2, 1)
+    end
   end
 end

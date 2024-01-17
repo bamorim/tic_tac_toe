@@ -74,23 +74,33 @@ defmodule TicTacToe do
   defp maybe_end_game(game) do
     case winner(game) do
       nil -> game
-      winner -> %Game{winner: winner, turn: nil}
+      winner -> %Game{game | winner: winner, turn: nil}
     end
   end
 
   def winner(%Game{board: {row0, row1, row2} = board}) do
-    {col0, col1, col2} = transpose(board)
-    {diag1, diag2} = diagonals(board)
+    any_empty_cell? =
+      board
+      |> Tuple.to_list()
+      |> Enum.flat_map(&Tuple.to_list/1)
+      |> Enum.any?(&is_nil/1)
 
-    with nil <- winner_at(row0),
-         nil <- winner_at(row1),
-         nil <- winner_at(row2),
-         nil <- winner_at(col0),
-         nil <- winner_at(col1),
-         nil <- winner_at(col2),
-         nil <- winner_at(diag1),
-         nil <- winner_at(diag2) do
-      nil
+    if any_empty_cell? do
+      {col0, col1, col2} = transpose(board)
+      {diag1, diag2} = diagonals(board)
+
+      with nil <- winner_at(row0),
+           nil <- winner_at(row1),
+           nil <- winner_at(row2),
+           nil <- winner_at(col0),
+           nil <- winner_at(col1),
+           nil <- winner_at(col2),
+           nil <- winner_at(diag1),
+           nil <- winner_at(diag2) do
+        nil
+      end
+    else
+      :tie
     end
   end
 
