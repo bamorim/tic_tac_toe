@@ -4,9 +4,31 @@ defmodule TicTacToe do
   """
 
   defmodule Game do
+    @type cell() :: nil | :x | :o
+    @type row() :: {cell(), cell(), cell()}
+    @type board() :: {row(), row(), row()}
+
+    @type running_game() :: %__MODULE__{
+            winner: nil,
+            turn: :x | :o,
+            board: board()
+          }
+
+    @type ended_game() :: %__MODULE__{
+            winner: :x | :o | :tie,
+            turn: nil,
+            board: board()
+          }
+
+    @type t() :: running_game() | ended_game()
+
     defstruct [:winner, :turn, :board]
   end
 
+  @doc """
+  Creates a new game with an empty board
+  """
+  @spec new_game() :: Game.t()
   def new_game do
     %Game{
       winner: nil,
@@ -18,12 +40,22 @@ defmodule TicTacToe do
     }
   end
 
+  @doc """
+  Returns current mark on a given position.
+
+  Currently raises if out of bounds
+  """
+  @spec get(Game.t(), integer(), integer()) :: Game.cell()
   def get(%Game{board: board}, x, y) do
     board
     |> elem(x)
     |> elem(y)
   end
 
+  @doc """
+  Same as play/3, but raises if anything is wrong
+  """
+  @spec play!(Game.t(), integer(), integer()) :: Game.t()
   def play!(game, x, y) do
     case play(game, x, y) do
       {:ok, game} -> game
@@ -31,13 +63,20 @@ defmodule TicTacToe do
     end
   end
 
+  @doc """
+  Registers a play from the current player (from the turn).
+
+  Will return an error when play is out of bounds, occupied or when the game is already over.
+  """
+  @spec play(Game.t(), integer(), integer()) ::
+          {:ok, Game.t()} | {:error, :game_over | :out_of_bounds | :occupied}
   def play(game, x, y) do
     with :ok <- check_game_over(game),
          :ok <- check_play_in_bounds(x, y),
          :ok <- check_play_is_free(game, x, y) do
       {:ok,
        game
-       |> do_play(x, y)
+       |> mark_play(x, y)
        |> next_turn()
        |> maybe_end_game()}
     end
@@ -61,7 +100,7 @@ defmodule TicTacToe do
     end
   end
 
-  defp do_play(%Game{turn: player, board: board} = game, x, y) do
+  defp mark_play(%Game{turn: player, board: board} = game, x, y) do
     row = board |> elem(x) |> put_elem(y, player)
     board = put_elem(board, x, row)
 
@@ -78,7 +117,8 @@ defmodule TicTacToe do
     end
   end
 
-  def winner(%Game{board: {row0, row1, row2} = board}) do
+  @spec winner(Game.t()) :: nil | :x | :o | :tie
+  defp winner(%Game{board: {row0, row1, row2} = board}) do
     any_empty_cell? =
       board
       |> Tuple.to_list()
