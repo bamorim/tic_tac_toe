@@ -1,21 +1,30 @@
 # TicTacToe
 
-**TODO: Add description**
+This is an implementation of a CLI-based TicTacToe game.
 
-## Installation
+## Building
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `tic_tac_toe` to your list of dependencies in `mix.exs`:
+To build it, you need:
 
-```elixir
-def deps do
-  [
-    {:tic_tac_toe, "~> 0.1.0"}
-  ]
-end
-```
+- Elixir
+- Erlang
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/tic_tac_toe>.
+Easiest way is to use [asdf](https://asdf-vm.com/) and install the versions defined in `.tool-versions`
 
+Then you just do:
+- `mix deps.get`
+- `mix escript.build`
+
+## Running
+
+After building, you should have an executable named `tic_tac_toe` which you can run with `./tic_tac_toe`
+
+## Ensuring quality
+
+This repository uses:
+- ExUnit for unit tests
+- Dialyzer for type checking
+
+Before running tests or dialyzer, make sure you fetched dependencies with `mix deps.get`
+
+To run all tests, just run `mix test`. To check types with dialyzer do `mix dialyzer`.

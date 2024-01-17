@@ -17,6 +17,7 @@ defmodule TicTacToe.CLI do
   end
 
   defp game_loop(game) do
+    render_board(game.board) |> IO.puts()
     IO.puts("Game is Over!")
     game.winner |> render_result() |> IO.puts()
   end
