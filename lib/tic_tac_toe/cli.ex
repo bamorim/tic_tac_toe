@@ -1,10 +1,20 @@
 defmodule TicTacToe.CLI do
   alias TicTacToe.Game
+  alias TicTacToe.CPUPlayer
 
   def main(_args) do
-    game = Game.new()
+    Game.new()
+    |> maybe_start_with_cpu_player()
+    |> game_loop()
+  end
 
-    game_loop(game)
+  defp maybe_start_with_cpu_player(game) do
+    if Enum.random([true, false]) do
+      {:ok, game} = CPUPlayer.play(game)
+      game
+    else
+      game
+    end
   end
 
   defp game_loop(%Game{winner: nil} = game) do
@@ -28,7 +38,11 @@ defmodule TicTacToe.CLI do
     case Game.play(game, x, y) do
       {:ok, game} ->
         IO.puts("")
-        game
+
+        case CPUPlayer.play(game) do
+          {:ok, game} -> game
+          _ -> game
+        end
 
       {:error, error} ->
         render_error(error) |> IO.puts()
