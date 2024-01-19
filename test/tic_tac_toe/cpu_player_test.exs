@@ -36,6 +36,22 @@ defmodule TicTacToe.CPUPlayerTest do
 
       assert {:error, :game_over} = CPUPlayer.play(game)
     end
+
+    test "returns error for full board" do
+      game =
+        Game.new()
+        |> Game.play!(0, 0)
+        |> Game.play!(0, 1)
+        |> Game.play!(1, 1)
+        |> Game.play!(0, 2)
+        |> Game.play!(1, 2)
+        |> Game.play!(1, 0)
+        |> Game.play!(2, 0)
+        |> Game.play!(2, 2)
+        |> Game.play!(2, 1)
+
+      assert {:error, :game_over} = CPUPlayer.play(game)
+    end
   end
 
   defp all_cells(%{board: board}) do
