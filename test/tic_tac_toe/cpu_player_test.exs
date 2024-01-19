@@ -24,6 +24,18 @@ defmodule TicTacToe.CPUPlayerTest do
         assert new_game.turn != game.turn
       end
     end
+
+    test "returns error when game is already over" do
+      game =
+        Game.new()
+        |> Game.play!(0, 0)
+        |> Game.play!(1, 0)
+        |> Game.play!(0, 1)
+        |> Game.play!(1, 1)
+        |> Game.play!(0, 2)
+
+      assert {:error, :game_over} = CPUPlayer.play(game)
+    end
   end
 
   defp all_cells(%{board: board}) do

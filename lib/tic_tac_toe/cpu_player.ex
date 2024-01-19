@@ -13,6 +13,7 @@ defmodule TicTacToe.CPUPlayer do
     case Game.play(game, x, y) do
       {:ok, new_game} -> {:ok, new_game}
       {:error, :occupied} -> play(game)
+      {:error, :game_over} -> {:error, :game_over}
     end
   end
 end
